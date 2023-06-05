@@ -29,12 +29,12 @@
         "symfony/lts": "^4@dev",
         "symfony/monolog-bundle": "3.4",
         "symfony/polyfill-apcu": "^1.0",
-        "symfony/swiftmailer-bundle": "^2.3",
+        "symfony/swiftmailer-bundle": "^3.1",
         "symfony/yaml": "^4.0"
     },
     "require-dev": {
         "symfony/dotenv": "^4.0",
-        "symfony/phpunit-bridge": "4.0"
+        "symfony/phpunit-bridge": "^4.0"
         
     },
     "scripts": {
