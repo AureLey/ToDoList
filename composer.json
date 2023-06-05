@@ -34,8 +34,8 @@
     },
     "require-dev": {
         "symfony/dotenv": "^4.0",
-        "symfony/phpunit-bridge": "^4.0",
-        "phpunit/phpunit": "^5.7"
+        "symfony/phpunit-bridge": "^4.0"
+        
     },
     "scripts": {
         "auto-scripts": {
