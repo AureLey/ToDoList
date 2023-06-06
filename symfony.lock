@@ -1,6 +1,6 @@
 {
     "doctrine/annotations": {
-        "version": "1.14",
+        "version": "2.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -8,7 +8,7 @@
             "ref": "a2759dd6123694c8d901d0ec80006e044c2e6457"
         },
         "files": [
-            "config/routes/annotations.yaml"
+            "./config/routes/annotations.yaml"
         ]
     },
     "doctrine/doctrine-bundle": {
