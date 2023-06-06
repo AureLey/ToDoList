@@ -45,6 +45,7 @@
             "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
+        "cs-fix": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src",
         "post-install-cmd": [
             "@auto-scripts"
         ],
