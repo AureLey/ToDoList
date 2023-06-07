@@ -1,5 +1,6 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    enable_authenticator_manager: true
     password_hashers:
         App\Entity\User:
             # Use native password encoder
@@ -7,15 +8,15 @@ security:
             # (i.e. Sodium when available).
             algorithm: auto
     providers:
-        our_users:
+        app_user_provider:
             entity: { class: App\Entity\User, property: username }
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: lazy
-            provider: our_users
+            lazy: true
+            provider: app_user_provider
             pattern: ^/
             form_login:
                 login_path: login
