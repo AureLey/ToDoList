@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Tests\App\Controller;
 
-
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
 
 class SecurityControllerTest extends WebTestCase
 {
@@ -15,11 +23,11 @@ class SecurityControllerTest extends WebTestCase
     {
         self::$client = static::createClient();
     }
+
     public function testLoginAction()
-    {       
+    {
         $crawler = self::$client->request('GET', '/login');
 
-        $this->assertEquals(200, self::$client->getResponse()->getStatusCode());      
-
+        $this->assertSame(200, self::$client->getResponse()->getStatusCode());
     }
 }
