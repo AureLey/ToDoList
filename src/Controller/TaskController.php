@@ -1,27 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    /**
-     * @Route("/tasks", name="task_list")
-     */
-    public function listAction()
+    #[Route('/tasks', name: 'task_list')]
+    public function listAction(ManagerRegistry $doctrine): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $doctrine->getRepository(Task::class)->findAll()]);
     }
 
-    /**
-     * @Route("/tasks/create", name="task_create")
-     */
-    public function createAction(Request $request)
+    #[Route('/tasks/create', name: 'task_create')]
+    public function createAction(Request $request, ManagerRegistry $doctrine): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -29,7 +38,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $em = $doctrine->getManager();
 
             $em->persist($task);
             $em->flush();
@@ -42,17 +51,18 @@ class TaskController extends AbstractController
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
+    // #[Route('/tasks/{id}/edit', name: 'task_edit')]
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
      */
-    public function editAction(Task $task, Request $request)
+    public function editAction(Task $task, Request $request, ManagerRegistry $doctrine): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $doctrine->getManager()->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -65,25 +75,27 @@ class TaskController extends AbstractController
         ]);
     }
 
+    // #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     /**
      * @Route("/tasks/{id}/toggle", name="task_toggle")
      */
-    public function toggleTaskAction(Task $task)
+    public function toggleTaskAction(Task $task, ManagerRegistry $doctrine): Response
     {
         $task->toggle(!$task->isDone());
-        $this->getDoctrine()->getManager()->flush();
+        $doctrine->getManager()->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
         return $this->redirectToRoute('task_list');
     }
 
+    // #[Route('/tasks/{id}/delete', name: 'task_delete')]
     /**
      * @Route("/tasks/{id}/delete", name="task_delete")
      */
-    public function deleteTaskAction(Task $task)
+    public function deleteTaskAction(Task $task, ManagerRegistry $doctrine): Response
     {
-        $em = $this->getDoctrine()->getManager();
+        $em = $doctrine->getManager();
         $em->remove($task);
         $em->flush();
 

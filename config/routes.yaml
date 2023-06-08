@@ -1,4 +1,4 @@
 homepage:
     path: /
     defaults:
-        _controller: App\Controller\DefaultController::indexAction
+        _controller: App\Controller\DefaultController::indexHomepage

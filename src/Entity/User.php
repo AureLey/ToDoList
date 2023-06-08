@@ -1,90 +1,179 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table("user")
+ *
  * @ORM\Entity
+ *
  * @UniqueEntity("email")
  */
-class User implements UserInterface
+// #[ORM\Entity]
+// #[UniqueEntity(fields: 'email', message: 'Email already used', )]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    // #[ORM\Id]
+    // #[ORM\GeneratedValue]
+    // #[ORM\Column]
     /**
      * @ORM\Column(type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
+    // #[ORM\Column(length: 255, unique: true)]
+    // #[Assert\NotBlank(message: 'Vous devez saisir un nom d\'utilisateur.')]
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     *
      * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
      */
-    private $username;
+    private ?string $username = null;
 
+    // #[ORM\Column(length: 64)]
     /**
      * @ORM\Column(type="string", length=64)
      */
-    private $password;
+    private ?string $password = null;
 
+    // #[ORM\Column(length: 60, unique: true)]
+    // #[Assert\NotBlank(message: 'Vous devez saisir une adresse email.')]
+    // #[Assert\Email(message: 'Le format de l\'adresse n\'est pas correcte.')]
     /**
      * @ORM\Column(type="string", length=60, unique=true)
+     *
      * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
+     *
      * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
      */
-    private $email;
+    private ?string $email = null;
 
-    public function getId()
+    /**
+     * getId.
+     *
+     * @return int
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    /**
+     * getUsername.
+     *
+     * @return string
+     */
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setUsername($username)
+    /**
+     * setUsername.
+     */
+    public function setUsername($username): self
     {
         $this->username = $username;
+
+        return $this;
     }
 
-    public function getSalt()
-    {
-        return null;
-    }
-
-    public function getPassword()
+    /**
+     * getPassword.
+     *
+     * @return string
+     */
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    /**
+     * setPassword.
+     */
+    public function setPassword($password): self
     {
         $this->password = $password;
+
+        return $this;
     }
 
-    public function getEmail()
+    /**
+     * getEmail.
+     *
+     * @return void
+     */
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail($email)
+    /**
+     * setEmail.
+     *
+     * @return void
+     */
+    public function setEmail($email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
-    public function getRoles()
+    /**
+     * getRoles.
+     */
+    public function getRoles(): array
     {
-        return array('ROLE_USER');
+        return ['ROLE_USER'];
     }
 
+    /**
+     * getUserIdentifier.
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * Returning a salt is only needed if you are not using a modern
+     * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     *
+     * @see UserInterface
+     */
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials()
     {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

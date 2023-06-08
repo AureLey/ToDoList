@@ -1,41 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    /**
-     * @Route("/login", name="login")
-     */
-    public function loginAction(AuthenticationUtils $authenticationUtils)
+    #[Route('/login', name: 'login')]
+    public function loginAction(AuthenticationUtils $authenticationUtils): Response
     {
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', array(
+        return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error'         => $error,
-        ));
-
+            'error' => $error,
+        ]);
     }
 
-    /**
-     * @Route("/login_check", name="login_check")
-     */
+    #[Route('/login_check', name: 'login_check')]
     public function loginCheck()
     {
         // This code is never executed.
     }
 
-    /**
-     * @Route("/logout", name="logout")
-     */
+    #[Route('/logout', name: 'logout')]
     public function logoutCheck()
     {
         // This code is never executed.

@@ -1,5 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -7,87 +18,150 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
+ *
  * @ORM\Table
  */
+#[ORM\Entity]
 class Task
 {
+    // #[ORM\Id]
+    // #[ORM\GeneratedValue]
+    // #[ORM\Column]
     /**
      * @ORM\Column(type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private ?int $id = null;
 
+    // #[ORM\Column]
     /**
      * @ORM\Column(type="datetime")
      */
-    private $createdAt;
+    private \DateTime $createdAt;
 
+    // #[ORM\Column]
+    // #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
     /**
      * @ORM\Column(type="string")
+     *
      * @Assert\NotBlank(message="Vous devez saisir un titre.")
      */
-    private $title;
+    private ?string $title = null;
 
+    // #[ORM\Column]
+    // #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
     /**
      * @ORM\Column(type="text")
+     *
      * @Assert\NotBlank(message="Vous devez saisir du contenu.")
      */
-    private $content;
+    private ?string $content = null;
 
+    // #[ORM\Column(type: 'boolean', options: ['default' => false])]
     /**
      * @ORM\Column(type="boolean")
      */
-    private $isDone;
+    private bool $isDone = false;
 
     public function __construct()
     {
-        $this->createdAt = new \Datetime();
+        $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
 
-    public function getId()
+    /**
+     * getId.
+     *
+     * @return int
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCreatedAt()
+    /**
+     * getCreatedAt.
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt($createdAt)
+    /**
+     * setCreatedAt.
+     *
+     * @param Datetime $createdAt
+     */
+    public function setCreatedAt($createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
     }
 
-    public function getTitle()
+    /**
+     * getTitle.
+     *
+     * @return string
+     */
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle($title)
+    /**
+     * setTitle.
+     *
+     * @param string $title
+     */
+    public function setTitle($title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
-    public function getContent()
+    /**
+     * getContent.
+     *
+     * @return string
+     */
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setContent($content)
+    /**
+     * setContent.
+     *
+     * @param string $content
+     */
+    public function setContent($content): self
     {
         $this->content = $content;
+
+        return $this;
     }
 
-    public function isDone()
+    /**
+     * isDone.
+     *
+     * @return bool
+     */
+    public function isDone(): ?bool
     {
         return $this->isDone;
     }
 
-    public function toggle($flag)
+    public function toggle($flag): self
     {
         $this->isDone = $flag;
+
+        return $this;
     }
 }
