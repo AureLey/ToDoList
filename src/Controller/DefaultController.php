@@ -13,15 +13,18 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
 {
+    
+    //#[Route('/', name: 'homepage')]
     /**
      * @Route("/", name="homepage")
      */
-    public function indexAction()
+    public function indexHomepage(): Response
     {
         return $this->render('default/index.html.twig');
     }

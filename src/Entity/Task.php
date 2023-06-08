@@ -2,45 +2,59 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Todolist
- *
- * (c)
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\Entity
+ *
  * @ORM\Table
  */
 #[ORM\Entity]
-
 class Task
 {
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    // #[ORM\Id]
+    // #[ORM\GeneratedValue]
+    // #[ORM\Column]
+    /**
+     * @ORM\Column(type="integer")
+     *
+     * @ORM\Id
+     *
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
     private ?int $id = null;
 
-    #[ORM\Column]
-    private \Datetime $createdAt;
+    // #[ORM\Column]
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private \DateTime $createdAt;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
+    // #[ORM\Column]
+    // #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @Assert\NotBlank(message="Vous devez saisir un titre.")
+     */
     private ?string $title = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
+    // #[ORM\Column]
+    // #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
+    /**
+     * @ORM\Column(type="text")
+     *
+     * @Assert\NotBlank(message="Vous devez saisir du contenu.")
+     */
     private ?string $content = null;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    // #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    /**
+     * @ORM\Column(type="boolean")
+     */
     private bool $isDone = false;
 
     public function __construct()
@@ -48,49 +62,100 @@ class Task
         $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
-
-    public function getId()
+    
+    /**
+     * getId
+     *
+     * @return int
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
-
-    public function getCreatedAt()
+    
+    /**
+     * getCreatedAt
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
-
-    public function setCreatedAt($createdAt)
+    
+    /**
+     * setCreatedAt
+     *
+     * @param  Datetime $createdAt
+     * @return self
+     */
+    public function setCreatedAt($createdAt): self
     {
         $this->createdAt = $createdAt;
-    }
 
-    public function getTitle()
+        return $this;
+    }
+    
+    /**
+     * getTitle
+     *
+     * @return string
+     */
+    public function getTitle(): ?string
     {
         return $this->title;
     }
-
-    public function setTitle($title)
+    
+    /**
+     * setTitle
+     *
+     * @param  string $title
+     * @return self
+     */
+    public function setTitle($title): self
     {
         $this->title = $title;
-    }
 
-    public function getContent()
+        return $this;
+    }
+    
+    /**
+     * getContent
+     *
+     * @return string
+     */
+    public function getContent(): ?string
     {
         return $this->content;
     }
-
-    public function setContent($content)
+    
+    /**
+     * setContent
+     *
+     * @param  string $content
+     * @return self
+     */
+    public function setContent($content): self
     {
         $this->content = $content;
-    }
 
-    public function isDone()
+        return $this;
+    }
+    
+    /**
+     * isDone
+     *
+     * @return bool
+     */
+    public function isDone(): ?bool
     {
         return $this->isDone;
     }
 
-    public function toggle($flag)
+    public function toggle($flag):self
     {
         $this->isDone = $flag;
+
+        return $this;
     }
 }
