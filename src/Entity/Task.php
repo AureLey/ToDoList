@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -62,9 +71,9 @@ class Task
         $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
-    
+
     /**
-     * getId
+     * getId.
      *
      * @return int
      */
@@ -72,9 +81,9 @@ class Task
     {
         return $this->id;
     }
-    
+
     /**
-     * getCreatedAt
+     * getCreatedAt.
      *
      * @return DateTime
      */
@@ -82,12 +91,11 @@ class Task
     {
         return $this->createdAt;
     }
-    
+
     /**
-     * setCreatedAt
+     * setCreatedAt.
      *
-     * @param  Datetime $createdAt
-     * @return self
+     * @param Datetime $createdAt
      */
     public function setCreatedAt($createdAt): self
     {
@@ -95,9 +103,9 @@ class Task
 
         return $this;
     }
-    
+
     /**
-     * getTitle
+     * getTitle.
      *
      * @return string
      */
@@ -105,12 +113,11 @@ class Task
     {
         return $this->title;
     }
-    
+
     /**
-     * setTitle
+     * setTitle.
      *
-     * @param  string $title
-     * @return self
+     * @param string $title
      */
     public function setTitle($title): self
     {
@@ -118,9 +125,9 @@ class Task
 
         return $this;
     }
-    
+
     /**
-     * getContent
+     * getContent.
      *
      * @return string
      */
@@ -128,12 +135,11 @@ class Task
     {
         return $this->content;
     }
-    
+
     /**
-     * setContent
+     * setContent.
      *
-     * @param  string $content
-     * @return self
+     * @param string $content
      */
     public function setContent($content): self
     {
@@ -141,9 +147,9 @@ class Task
 
         return $this;
     }
-    
+
     /**
-     * isDone
+     * isDone.
      *
      * @return bool
      */
@@ -152,7 +158,7 @@ class Task
         return $this->isDone;
     }
 
-    public function toggle($flag):self
+    public function toggle($flag): self
     {
         $this->isDone = $flag;
 
