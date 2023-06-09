@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Todolist
- *
- * (c)
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,12 +22,6 @@ class SecurityController extends AbstractController
             'error' => $error,
         ]);
     }
-
-    // #[Route('/login_check', name: 'login_check')]
-    // public function loginCheck()
-    // {
-    //     // This code is never executed.
-    // }
 
     #[Route('/logout', name: 'logout')]
     public function logoutCheck()
