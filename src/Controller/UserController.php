@@ -2,19 +2,11 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Todolist
- *
- * (c)
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +15,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/users', name: 'user_list')]
-    public function listAction(ManagerRegistry $doctrine)
+    // Injection of Repository
+    private UserRepository $userRepo;
+
+    public function __construct(UserRepository $userRepo)
     {
-        return $this->render('user/list.html.twig', ['users' => $doctrine->getRepository(User::class)->findAll()]);
+        $this->userRepo = $userRepo;
+    }
+
+    #[Route('/users', name: 'user_list')]
+    public function listAction()
+    {
+        return $this->render('user/list.html.twig', ['users' => $this->userRepo->findAll()]);
     }
 
     #[Route('/users/create', name: 'user_create')]
@@ -38,12 +38,12 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $doctrine->getManager();
+            
             $password = $encoder->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
 
-            $em->persist($user);
-            $em->flush();
+            $this->userRepo->persist($user);
+            $this->userRepo->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 

@@ -14,13 +14,15 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity]
-#[UniqueEntity(fields: 'email', message: 'Email already used', )]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: 'email', message: 'Cet Email est déjà utilisé')]
+#[UniqueEntity(fields: 'username', message: 'Ce nom utilisateur est déjà utilisé')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -39,6 +41,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'Vous devez saisir une adresse email.')]
     #[Assert\Email(message: 'Le format de l\'adresse n\'est pas correcte.')]
     private ?string $email = null;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles = [];
 
     /**
      * getId.
@@ -113,11 +118,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * getRoles.
+     * @see UserInterface
      */
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function setRoles(array $roles): self
+    {
+        if(null == $roles )
+        {
+            return $roles[] = 'ROLE_USER';
+        }
+        else
+        {
+            $this->roles = $roles;
+
+            return $this;
+        }
+        
     }
 
     /**

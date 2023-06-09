@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TaskRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
     #[ORM\Id]
@@ -27,11 +29,11 @@ class Task
     #[ORM\Column]
     private \DateTime $createdAt;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
     private ?string $title = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Vous devez saisir du contenu.')]
     private ?string $content = null;
 

@@ -15,6 +15,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Repository\TaskRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,10 +24,18 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
+    // Injection of Repository
+    private TaskRepository $taskRepo;
+
+    public function __construct(TaskRepository $taskRepo)
+    {
+        $this->taskRepo = $taskRepo;
+    }
+
     #[Route('/tasks', name: 'task_list')]
     public function listAction(ManagerRegistry $doctrine): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $doctrine->getRepository(Task::class)->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findAll()]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]
