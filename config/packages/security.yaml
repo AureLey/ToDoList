@@ -1,6 +1,5 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
-    enable_authenticator_manager: true
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
@@ -17,11 +16,11 @@ security:
             pattern: ^/
             form_login:
                 login_path: login
-                check_path: login_check
+                check_path: login
                 always_use_default_target_path:  true
                 default_target_path:  /
-            logout: ~                   
-
+                enable_csrf: true
+            logout: ~                       
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
 
@@ -31,7 +30,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/users, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_USER }
 when@test:
