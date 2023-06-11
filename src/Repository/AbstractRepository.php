@@ -16,12 +16,17 @@ namespace App\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class AbstractRepository extends ServiceEntityRepository
+abstract class AbstractRepository extends ServiceEntityRepository
 {
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    public function getEm()
+    {
+        return $this->entityManager;
     }
 }

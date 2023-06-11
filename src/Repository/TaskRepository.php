@@ -28,13 +28,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    // Inject AbstractRepo to get EntityMananger
-    // private AbstractRepository $abstractRepo;
-
-    // public function __construct(AbstractRepository $abstractRepo)
-    // {
-    //     $this->abstractRepo = $abstractRepo;
-    // }
 
     public function __construct(ManagerRegistry $registry)
     {

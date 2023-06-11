@@ -16,41 +16,42 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TaskController extends AbstractController
 {
     // Injection of Repository
     private TaskRepository $taskRepo;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(TaskRepository $taskRepo)
+    public function __construct(TaskRepository $taskRepo, EntityManagerInterface $entityManager)
     {
         $this->taskRepo = $taskRepo;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/tasks', name: 'task_list')]
-    public function listAction(ManagerRegistry $doctrine): Response
+    public function listTask(): Response
     {
         return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findAll()]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, ManagerRegistry $doctrine): Response
+    public function createTask(Request $request): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $doctrine->getManager();
+        if ($form->isSubmitted() && $form->isValid()) {            
 
-            $em->persist($task);
-            $em->flush();
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
@@ -61,14 +62,14 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request, ManagerRegistry $doctrine): Response
+    public function editTask(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $doctrine->getManager()->flush();
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -82,10 +83,10 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task, ManagerRegistry $doctrine): Response
+    public function toggleTask(Task $task): Response
     {
         $task->toggle(!$task->isDone());
-        $doctrine->getManager()->flush();
+        $this->entityManager->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
@@ -93,11 +94,10 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task, ManagerRegistry $doctrine): Response
-    {
-        $em = $doctrine->getManager();
-        $em->remove($task);
-        $em->flush();
+    public function deleteTask(Task $task): Response
+    {        
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 

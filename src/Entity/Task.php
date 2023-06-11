@@ -19,11 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[ORM\Table(name: 'task')]
+#[ORM\Table]
 class Task
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'SEQUENCE')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column]
     private ?int $id = null;
 
