@@ -36,7 +36,7 @@ class AdminTaskController extends AbstractController
     #[Route('/admin/tasks', name: 'admin_list_tasks')]
     public function getAllTasksDashboard()
     {
-        return $this->render('security/tasks.html.twig', [
+        return $this->render('security/admin.html.twig', [
             'tasks' => $this->taskRepo->findAll(),
             'dashboard' => false]);
     }

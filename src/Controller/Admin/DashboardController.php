@@ -15,8 +15,9 @@ namespace App\Controller\Admin;
 
 
 use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DashboardController extends AbstractController
 {
@@ -29,7 +30,7 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/admin', name: 'dashboard')]
-    public function adminDashboard()
+    public function adminDashboard(): Response
     {
         return $this->render('security/admin.html.twig', [
             'controller_name' => 'AdminTaskController',

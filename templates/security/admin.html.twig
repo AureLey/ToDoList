@@ -1,3 +1,4 @@
+{# Admin DashBoard, test if Dashboard?  send User infos : Tasks infos #}
 {% extends 'base.html.twig' %}
 
 {% block header_img %}{% endblock %}
@@ -5,35 +6,12 @@
 {% block body %}
 {% if dashboard %}
     <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
+    <a href="{{ path('admin_user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
+    {{ include("security/users.html.twig")}}
 {% else %}
     <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
+    <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
+    {{ include("security/tasks.html.twig")}}
 {% endif %}
-    <div class="row">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Nom d'utilisateur</th>
-                <th>Adresse d'utilisateur</th>
-                <th>Roles</th>
-                <th>Actions</th>                
-            </tr>
-            </thead>
-            <tbody>
-            {% for user in users %}
-                <tr>
-                    <th scope="row">{{ loop.index }}</th>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{user.roles|json_encode()}}</td>
-                    <td>
-                        <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm" onclick="return window.confirm('Vous êtes sur le point de supprimer l'utilisateur?')">Delete</a>
-                        {# {{ path('admin_user_delete', {'id' : user.id}) }} #}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+
 {% endblock %}

@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of Todolist
- *
- * (c)
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace App\Controller;
 
 use App\Entity\Task;
@@ -35,9 +26,15 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks', name: 'task_list')]
-    public function listTask(): Response
+    public function listTaskUncheck(): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => false], ['createdAt' => 'DESC'])]);
+    }
+
+    #[Route('/tasks/done', name: 'task_list_done')]
+    public function listTaskCheck(): Response
+    {
+        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => true], ['createdAt' => 'DESC'])]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]

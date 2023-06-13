@@ -1,16 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block header_img %}{% endblock %}
-
-{% block header_title %}<h1>Liste des {{dashboard ?'utilisateurs': 'tâches'}}</h1>{% endblock %}
-
-{% block body %}
-{% if dashboard %}
-    <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
-{% else %}
-    <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
-    <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
-{% endif %}
+{# File Listing all Task from all Users #}
 <div class="row">
     <table class="table">
         <thead>
@@ -38,4 +26,4 @@
         </tbody>
     </table>
 </div>
-{% endblock %}
+
