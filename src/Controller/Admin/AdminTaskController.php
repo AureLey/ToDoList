@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Task;
 use App\Form\TaskType;
@@ -22,25 +22,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class TaskController extends AbstractController
+class AdminTaskController extends AbstractController
 {
-    // Injection of Repository
     private TaskRepository $taskRepo;
     private EntityManagerInterface $entityManager;
 
-    public function __construct(TaskRepository $taskRepo, EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, TaskRepository $taskRepo)
     {
-        $this->taskRepo = $taskRepo;
         $this->entityManager = $entityManager;
+        $this->taskRepo = $taskRepo;
     }
 
-    #[Route('/tasks', name: 'task_list')]
-    public function listTask(): Response
+    #[Route('/admin/tasks', name: 'admin_list_tasks')]
+    public function getAllTasksDashboard()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findAll()]);
+        return $this->render('security/tasks.html.twig', [
+            'tasks' => $this->taskRepo->findAll(),
+            'dashboard' => false]);
     }
 
-    #[Route('/tasks/create', name: 'task_create')]
+    #[Route('admin/tasks/create', name: 'admin_task_create')]
     public function createTask(Request $request): Response
     {
         $task = new Task();
@@ -54,14 +55,14 @@ class TaskController extends AbstractController
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('admin_list_tasks');
         }
 
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function editTask(Task $task, Request $request): Response
+    #[Route('/admin/tasks/{id}/edit', name: 'admin_edit_task')]
+    public function editTaskAdmin(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
 
@@ -72,7 +73,7 @@ class TaskController extends AbstractController
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('admin_list_tasks');
         }
 
         return $this->render('task/edit.html.twig', [
@@ -81,18 +82,7 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTask(Task $task): Response
-    {
-        $task->toggle(!$task->isDone());
-        $this->entityManager->flush();
-
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
-
-        return $this->redirectToRoute('task_list');
-    }
-
-    #[Route('/tasks/{id}/delete', name: 'task_delete')]
+    #[Route('/tasks/{id}/delete', name: 'admin_delete_task')]
     public function deleteTask(Task $task): Response
     {
         $this->entityManager->remove($task);
@@ -100,6 +90,6 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('admin_list_tasks');
     }
 }

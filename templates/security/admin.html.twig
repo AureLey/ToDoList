@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block header_img %}{% endblock %}
+{% block header_title %}<h1>Liste des {{dashboard ?'utilisateurs': 'tâches'}}</h1>{% endblock %}
+{% block body %}
+{% if dashboard %}
+    <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
+{% else %}
+    <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
+{% endif %}
+    <div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom d'utilisateur</th>
+                <th>Adresse d'utilisateur</th>
+                <th>Roles</th>
+                <th>Actions</th>                
+            </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{user.roles|json_encode()}}</td>
+                    <td>
+                        <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                        <a href="#" class="btn btn-danger btn-sm" onclick="return window.confirm('Vous êtes sur le point de supprimer l'utilisateur?')">Delete</a>
+                        {# {{ path('admin_user_delete', {'id' : user.id}) }} #}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

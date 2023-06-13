@@ -14,9 +14,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\User;
-use App\Repository\AbstractRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<User>

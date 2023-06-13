@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block header_img %}{% endblock %}
+
+{% block header_title %}<h1>Liste des {{dashboard ?'utilisateurs': 'tâches'}}</h1>{% endblock %}
+
+{% block body %}
+{% if dashboard %}
+    <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
+{% else %}
+    <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
+    <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
+{% endif %}
+<div class="row">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nom de la tâche</th>
+            <th>Status</th>
+            <th>Nom d'utilisateur</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ task.title }}</td>                
+                <td>{% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
+                <td>Username</td>
+                <td>
+                    <a href="{{ path('admin_edit_task', {'id' : task.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                    <a href="{{ path('admin_delete_task', {'id' : task.id}) }}" class="btn btn-danger btn-sm" onclick="return window.confirm('Supprimer la tâche?')">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
