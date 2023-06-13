@@ -18,6 +18,8 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class DashboardController extends AbstractController
 {
@@ -30,9 +32,10 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/admin', name: 'dashboard')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function adminDashboard(): Response
     {
-        return $this->render('security/admin.html.twig', [
+        return $this->render('admin/admin.html.twig', [
             'controller_name' => 'AdminTaskController',
             'users' => $this->userRepo->findAll(),
             'dashboard' => true]);

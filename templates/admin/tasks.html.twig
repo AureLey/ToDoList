@@ -16,7 +16,7 @@
                 <th scope="row">{{ loop.index }}</th>
                 <td>{{ task.title }}</td>                
                 <td>{% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
-                <td>Username</td>
+                <td>{{task.user.username()}}</td>
                 <td>
                     <a href="{{ path('admin_edit_task', {'id' : task.id}) }}" class="btn btn-success btn-sm">Edit</a>
                     <a href="{{ path('admin_delete_task', {'id' : task.id}) }}" class="btn btn-danger btn-sm" onclick="return window.confirm('Supprimer la tâche?')">Delete</a>

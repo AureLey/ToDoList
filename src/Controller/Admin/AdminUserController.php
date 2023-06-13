@@ -22,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class AdminUserController extends AbstractController
 {
@@ -35,7 +37,8 @@ class AdminUserController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/users/create', name: 'admin_user_create')]
+    #[Route('admin/users/create', name: 'admin_user_create')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function createUser(Request $request, UserPasswordHasherInterface $encoder): Response
     {
         $user = new User();
@@ -55,10 +58,11 @@ class AdminUserController extends AbstractController
             return $this->redirectToRoute('dashboard');
         }
 
-        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('admin/create_user.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route('/users/{id}/edit', name: 'admin_user_edit')]
+    #[Route('admin/users/{id}/edit', name: 'admin_user_edit')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function editUser(User $user, Request $request, UserPasswordHasherInterface $encoder): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -76,10 +80,11 @@ class AdminUserController extends AbstractController
             return $this->redirectToRoute('dashboard');
         }
 
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('admin/edit_user.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 
-    #[Route('/users/{id}/delete', name: 'admin_user_delete')]
+    #[Route('admin/users/{id}/delete', name: 'admin_user_delete')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function deleteTask(User $user): Response
     {
         $this->entityManager->remove($user);

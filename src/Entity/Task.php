@@ -41,6 +41,12 @@ class Task
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isDone = false;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    private ?user $user = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -136,6 +142,30 @@ class Task
     public function toggle($flag): self
     {
         $this->isDone = $flag;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?user
+    {
+        return $this->user;
+    }
+
+    public function setUser(?user $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

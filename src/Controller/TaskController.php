@@ -28,13 +28,13 @@ class TaskController extends AbstractController
     #[Route('/tasks', name: 'task_list')]
     public function listTaskUncheck(): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => false], ['createdAt' => 'DESC'])]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => false, 'user'=> $this->getUser()], ['createdAt' => 'DESC'])]);
     }
 
     #[Route('/tasks/done', name: 'task_list_done')]
     public function listTaskCheck(): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => true], ['createdAt' => 'DESC'])]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepo->findBy(['isDone' => true,'user'=>$this->getUser()], ['createdAt' => 'DESC'])]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]
@@ -46,6 +46,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setUser($this->getUser());
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
@@ -60,6 +61,8 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
     public function editTask(Task $task, Request $request): Response
     {
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_EDIT', $task);
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -81,6 +84,9 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTask(Task $task): Response
     {
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_VIEW', $task);
+
         $task->toggle(!$task->isDone());
         $this->entityManager->flush();
 
@@ -92,6 +98,8 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTask(Task $task): Response
     {
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_DELETE', $task);
         $this->entityManager->remove($task);
         $this->entityManager->flush();
 

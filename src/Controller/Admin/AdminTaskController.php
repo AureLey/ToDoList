@@ -17,10 +17,12 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminTaskController extends AbstractController
 {
@@ -34,14 +36,16 @@ class AdminTaskController extends AbstractController
     }
 
     #[Route('/admin/tasks', name: 'admin_list_tasks')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function getAllTasksDashboard()
     {
-        return $this->render('security/admin.html.twig', [
+        return $this->render('admin/admin.html.twig', [
             'tasks' => $this->taskRepo->findAll(),
             'dashboard' => false]);
     }
 
     #[Route('admin/tasks/create', name: 'admin_task_create')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function createTask(Request $request): Response
     {
         $task = new Task();
@@ -50,6 +54,7 @@ class AdminTaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setUser($this->getUser());
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
@@ -62,6 +67,7 @@ class AdminTaskController extends AbstractController
     }
 
     #[Route('/admin/tasks/{id}/edit', name: 'admin_edit_task')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function editTaskAdmin(Task $task, Request $request): Response
     {
         $form = $this->createForm(TaskType::class, $task);
@@ -82,7 +88,8 @@ class AdminTaskController extends AbstractController
         ]);
     }
 
-    #[Route('/tasks/{id}/delete', name: 'admin_delete_task')]
+    #[Route('/admin/tasks/{id}/delete', name: 'admin_delete_task')]
+    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function deleteTask(Task $task): Response
     {
         $this->entityManager->remove($task);

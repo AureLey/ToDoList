@@ -7,11 +7,11 @@
 {% if dashboard %}
     <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
     <a href="{{ path('admin_user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
-    {{ include("security/users.html.twig")}}
+    {{ include("admin/users.html.twig")}}
 {% else %}
     <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
     <a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
-    {{ include("security/tasks.html.twig")}}
+    {{ include("admin/tasks.html.twig")}}
 {% endif %}
 
 {% endblock %}
