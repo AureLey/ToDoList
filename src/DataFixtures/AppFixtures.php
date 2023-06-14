@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
         $this->createMainUser($faker, $manager);
-        for ($i = 0; $i < 4; ++$i) {
+        for ($i = 0; $i < 7; ++$i) {
             $user = new User();
             $password = $this->hasher->hashPassword($user, 'root');
             $user->setUsername($faker->firstname())
@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
      */
     public function generateTask(User $user, $faker, ObjectManager $manager)
     {
-        for ($j = 0; $j < rand(3, 20); ++$j) {
+        for ($j = 0; $j < rand(6, 20); ++$j) {
             $this->createTask($faker, $user, $manager);
         }
     }
