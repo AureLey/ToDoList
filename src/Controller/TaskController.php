@@ -15,7 +15,9 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\TaskRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,14 +25,42 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    #[Route('/tasks', name: 'task_list')]
-    public function listAction(ManagerRegistry $doctrine): Response
+    // Injection of Repository
+    private TaskRepository $taskRepo;
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(TaskRepository $taskRepo, EntityManagerInterface $entityManager)
     {
-        return $this->render('task/list.html.twig', ['tasks' => $doctrine->getRepository(Task::class)->findAll()]);
+        $this->taskRepo = $taskRepo;
+        $this->entityManager = $entityManager;
+    }
+
+    #[Route('/tasks', name: 'task_list')]
+    public function listTaskUncheck(Request $request, PaginatorInterface $paginator): Response
+    {
+        $tasks = $this->taskRepo->findBy(['isDone' => false, 'user' => $this->getUser()], ['createdAt' => 'DESC']);
+        $taskPaginate = $paginator->paginate(
+            $tasks,
+            $request->query->getInt('page', 1),
+            6);
+
+        return $this->render('task/list.html.twig', ['tasks' => $taskPaginate]);
+    }
+
+    #[Route('/tasks/done', name: 'task_list_done')]
+    public function listTaskCheck(Request $request, PaginatorInterface $paginator): Response
+    {
+        $tasks = $this->taskRepo->findBy(['isDone' => true, 'user' => $this->getUser()], ['createdAt' => 'DESC']);
+        $taskPaginate = $paginator->paginate(
+            $tasks,
+            $request->query->getInt('page', 1),
+            6);
+
+        return $this->render('task/list.html.twig', ['tasks' => $taskPaginate]);
     }
 
     #[Route('/tasks/create', name: 'task_create')]
-    public function createAction(Request $request, ManagerRegistry $doctrine): Response
+    public function createTask(Request $request): Response
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -38,10 +68,9 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $doctrine->getManager();
-
-            $em->persist($task);
-            $em->flush();
+            $task->setUser($this->getUser());
+            $this->entityManager->persist($task);
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
@@ -52,14 +81,16 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    public function editAction(Task $task, Request $request, ManagerRegistry $doctrine): Response
+    public function editTask(Task $task, Request $request): Response
     {
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_EDIT', $task);
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $doctrine->getManager()->flush();
+            $this->entityManager->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -73,10 +104,13 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(Task $task, ManagerRegistry $doctrine): Response
+    public function toggleTask(Task $task): Response
     {
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_VIEW', $task);
+
         $task->toggle(!$task->isDone());
-        $doctrine->getManager()->flush();
+        $this->entityManager->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 
@@ -84,11 +118,12 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    public function deleteTaskAction(Task $task, ManagerRegistry $doctrine): Response
+    public function deleteTask(Task $task): Response
     {
-        $em = $doctrine->getManager();
-        $em->remove($task);
-        $em->flush();
+        // Check permission to delete via Voter function.
+        $this->denyAccessUnlessGranted('TASK_DELETE', $task);
+        $this->entityManager->remove($task);
+        $this->entityManager->flush();
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 

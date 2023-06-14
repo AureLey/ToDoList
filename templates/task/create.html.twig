@@ -2,9 +2,13 @@
 
 {% block body %}
     <div class="row">
-        {{ form_start(form, {'action' : path('task_create')}) }}
+        {% if is_granted('ROLE_ADMIN') %}
+            {# Use the same twig form but checking granted then redirect to the right page #}
+            {{ form_start(form, {'action' : path('admin_task_create')}) }}
+        {% else %}
+            {{ form_start(form, {'action' : path('task_create')}) }}
+        {% endif %}
             {{ form_widget(form) }}
-
             <button type="submit" class="btn btn-success pull-right">Ajouter</button>
         {{ form_end(form) }}
 

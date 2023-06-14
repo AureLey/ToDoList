@@ -1,0 +1,39 @@
+{# File Listing all Task from all Users #}
+<div class="row">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Nom de la tâche</th>
+            <th>Status</th>
+            <th>Nom d'utilisateur</th>
+            
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ task.title }}</td>                
+                <td>{% if task.isDone %}<span class="glyphicon glyphicon-ok"></span>{% else %}<span class="glyphicon glyphicon-remove"></span>{% endif %}</td>
+                <td>{% if task.user is not null %}
+                        {{task.user.username }}
+                    {% else %}
+                        Anonyme
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ path('admin_edit_task', {'id' : task.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                    <a href="{{ path('admin_delete_task', {'id' : task.id}) }}" class="btn btn-danger btn-sm" onclick="return window.confirm('Supprimer la tâche?')">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th scope="row">{{ knp_pagination_render(tasks) }}</th>     
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

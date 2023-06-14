@@ -2,9 +2,13 @@
 
 {% block body %}
     <div class="row">
+    {% if is_granted('ROLE_ADMIN') %}
+        {# Use the same twig form but checking granted then redirect to the right page #}
+        {{ form_start(form, {'action' : path('admin_edit_task', { 'id' : task.id })}) }}
+    {% else %}
         {{ form_start(form, {'action' : path('task_edit', { 'id' : task.id })}) }}
+    {% endif %}
             {{ form_widget(form) }}
-
             <button type="submit" class="btn btn-success pull-right">Modifier</button>
         {{ form_end(form) }}
     </div>
