@@ -86,7 +86,7 @@ class AdminTaskController extends AbstractController
             return $this->redirectToRoute('admin_list_tasks');
         }
 
-        return $this->render('task/edit.html.twig', [
+        return $this->render('admin/edit_task.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
         ]);
