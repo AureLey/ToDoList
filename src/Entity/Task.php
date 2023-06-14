@@ -45,6 +45,7 @@ class Task
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private ?user $user = null;
 
     public function __construct()

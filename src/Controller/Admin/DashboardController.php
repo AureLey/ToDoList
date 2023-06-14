@@ -13,14 +13,15 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-
 use App\Repository\UserRepository;
+use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 class DashboardController extends AbstractController
 {
     // Injection of Repository
@@ -32,12 +33,16 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/admin', name: 'dashboard')]
-    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
-    public function adminDashboard(): Response
+    public function adminDashboard(Request $request, PaginatorInterface $paginator): Response
     {
+        $users = $this->userRepo->findAll();
+        $userPaginate = $paginator->paginate(
+            $users,
+            $request->query->getInt('page', 1),
+            5);
+
         return $this->render('admin/admin.html.twig', [
-            'controller_name' => 'AdminTaskController',
-            'users' => $this->userRepo->findAll(),
-            'dashboard' => true]);
+                'users' => $userPaginate,
+                'dashboard' => true]);
     }
 }

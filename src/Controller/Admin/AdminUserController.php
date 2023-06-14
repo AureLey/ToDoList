@@ -15,16 +15,17 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Routing\Annotation\Route;
 
+#[IsGranted('ROLE_ADMIN')]
 class AdminUserController extends AbstractController
 {
     // Injection of Repository
@@ -38,7 +39,6 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('admin/users/create', name: 'admin_user_create')]
-    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function createUser(Request $request, UserPasswordHasherInterface $encoder): Response
     {
         $user = new User();
@@ -62,7 +62,6 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('admin/users/{id}/edit', name: 'admin_user_edit')]
-    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
     public function editUser(User $user, Request $request, UserPasswordHasherInterface $encoder): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -84,9 +83,14 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('admin/users/{id}/delete', name: 'admin_user_delete')]
-    #[IsGranted('ROLE_ADMIN', message: 'No access! Get out!')]
-    public function deleteTask(User $user): Response
+    public function deleteTask(User $user, TaskRepository $taskRepository): Response
     {
+        $tasks = $taskRepository->findBy(['user' => $user->getId()]);
+        foreach ($tasks as $task) {
+            $task->setUser(null);
+            $this->entityManager->persist($task);
+        }
+        // $this->entityManager->flush();
         $this->entityManager->remove($user);
         $this->entityManager->flush();
 

@@ -1,9 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Security\Voter;
 
-use App\Entity\User;
 use App\Entity\Task;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,7 +27,7 @@ class TaskVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE], true)
+        return \in_array($attribute, [self::EDIT, self::VIEW, self::DELETE], true)
             && $subject instanceof Task;
     }
 
