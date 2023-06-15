@@ -37,7 +37,7 @@ class AdminTaskController extends AbstractController
     }
 
     #[Route('/admin/tasks', name: 'admin_list_tasks')]
-    public function getAllTasksDashboard(Request $request, PaginatorInterface $paginator)
+    public function getAllTasksDashboard(Request $request, PaginatorInterface $paginator):Response
     {
         $tasks = $this->taskRepo->findAll();
         $taskPaginate = $paginator->paginate(

@@ -113,20 +113,37 @@ class Task
     {
         return $this->isDone;
     }
-
+    
+    /**
+     * toggle
+     *
+     * @param  mixed $flag
+     * @return self
+     */
     public function toggle($flag): self
     {
         $this->isDone = $flag;
 
         return $this;
     }
-
+    
+    /**
+     * getUser
+     *
+     * @return user
+     */
     public function getUser(): ?user
     {
         return $this->user;
     }
-
-    public function setUser(?user $user): static
+    
+    /**
+     * setUser
+     *
+     * @param  mixed $user
+     * @return self
+     */
+    public function setUser(?user $user): self
     {
         $this->user = $user;
 

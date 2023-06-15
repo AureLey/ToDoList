@@ -77,7 +77,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * setUsername.
+     * setUsername
+     *
+     * @param  mixed $username
+     * @return self
      */
     public function setUsername($username): self
     {
@@ -95,9 +98,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
-
+  
     /**
-     * setPassword.
+     * setPassword
+     *
+     * @param  mixed $password
+     * @return self
      */
     public function setPassword($password): self
     {
@@ -127,9 +133,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+  
     /**
+     * getRoles
      * @see UserInterface
+     *
+     * @return array
      */
     public function getRoles(): array
     {
@@ -139,9 +148,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
-
+ 
     /**
+     * setRoles
      * @see UserInterface
+     * @param  mixed $roles
+     * @return self
      */
     public function setRoles(array $roles): self
     {
@@ -153,9 +165,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+  
     /**
-     * getUserIdentifier.
+     * getUserIdentifier
+     *
+     * @return string
      */
     public function getUserIdentifier(): string
     {
@@ -165,14 +179,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Returning a salt is only needed if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
-     *
+     *    
+     */    
+    /**
+     * getSalt
      * @see UserInterface
+     * @return string
      */
     public function getSalt(): ?string
     {
         return null;
     }
-
+    
+    /**
+     * eraseCredentials
+     *
+     * @return void
+     */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -186,8 +209,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->tasks;
     }
-
-    public function addTask(Task $task): static
+    
+    /**
+     * addTask
+     *
+     * @param  mixed $task
+     * @return self
+     */
+    public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
@@ -196,8 +225,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    public function removeTask(Task $task): static
+    
+    /**
+     * removeTask
+     *
+     * @param  mixed $task
+     * @return self
+     */
+    public function removeTask(Task $task): self
     {
         if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)
