@@ -3,9 +3,9 @@
 {% block body %}
     <div class="row"><h1>Créer une nouvelle tâche</h1></div>
     <div class="row">
-        {% if is_granted('ROLE_ADMIN') %}
+        {% if app.request.get('_route')== 'admin_task_create' and is_granted('ROLE_ADMIN') %}
             {# Use the same twig form but checking granted then redirect to the right page #}
-            {{ form_start(form, {'action' : path('admin_task_create')}) }}
+            {{ form_start(form, {'action' : path('admin_task_create')}) }}    
         {% else %}
             {{ form_start(form, {'action' : path('task_create')}) }}
         {% endif %}

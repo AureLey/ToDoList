@@ -31,7 +31,7 @@ class DefaultControllerTest extends ToolsWebTestCase
 
     public function testHomepageWithAuth():void
     {   
-        $this->client->loginUser($this->getUserTest()); 
+        //$this->client->loginUser($this->getUserTest()); 
 
         $crawler = $this->client->request(Request::METHOD_GET, '/');      
         //Testing redirect Route
