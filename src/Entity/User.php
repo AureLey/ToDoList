@@ -13,15 +13,15 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table]
@@ -78,10 +78,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * setUsername
-     *
-     * @param  mixed $username
-     * @return self
+     * setUsername.
      */
     public function setUsername($username): self
     {
@@ -99,12 +96,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->password;
     }
-  
+
     /**
-     * setPassword
-     *
-     * @param  mixed $password
-     * @return self
+     * setPassword.
      */
     public function setPassword($password): self
     {
@@ -134,12 +128,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-  
+
     /**
-     * getRoles
-     * @see UserInterface
+     * getRoles.
      *
-     * @return array
+     * @see UserInterface
      */
     public function getRoles(): array
     {
@@ -149,12 +142,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
- 
+
     /**
-     * setRoles
+     * setRoles.
+     *
      * @see UserInterface
-     * @param  mixed $roles
-     * @return self
+     *
+     * @param mixed $roles
      */
     public function setRoles(array $roles): self
     {
@@ -166,11 +160,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-  
+
     /**
-     * getUserIdentifier
-     *
-     * @return string
+     * getUserIdentifier.
      */
     public function getUserIdentifier(): string
     {
@@ -180,22 +172,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Returning a salt is only needed if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
-     *    
-     */    
+     */
     /**
-     * getSalt
+     * getSalt.
+     *
      * @see UserInterface
+     *
      * @return string
      */
     public function getSalt(): ?string
     {
         return null;
     }
-    
+
     /**
-     * eraseCredentials
-     *
-     * @return void
+     * eraseCredentials.
      */
     public function eraseCredentials(): void
     {
@@ -210,12 +201,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->tasks;
     }
-    
+
     /**
-     * addTask
+     * addTask.
      *
-     * @param  mixed $task
-     * @return self
+     * @param mixed $task
      */
     public function addTask(Task $task): self
     {
@@ -226,12 +216,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
     /**
-     * removeTask
+     * removeTask.
      *
-     * @param  mixed $task
-     * @return self
+     * @param mixed $task
      */
     public function removeTask(Task $task): self
     {

@@ -1,58 +1,99 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Tests\Controller;
 
-use App\Entity\User;
-use App\Tests\Tools\ToolsWebTestCase;
+use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
-class DefaultControllerTest extends ToolsWebTestCase
-{   
-    
-        
+class DefaultControllerTest extends DatabaseDependantTestCase
+{
     /**
-     * testHomepageRedirection, Testing redirection to login route
-     *
-     * @return void
+     * testHomepage, Testing Homepage.
      */
-    public function testHomepageRedirection(): void
+    public function testIndexHomepage(): void
     {
         $this->client->request(Request::METHOD_GET, '/');
-        //Test Redirection when nobody is loged
+        // Test Redirection when nobody is loged
         $this->assertResponseRedirects();
-        //Follow Redirection
+        // Follow Redirection
         $this->client->followRedirect();
-        //Testing redirect Route
-        $this->assertRouteSame('login');        
-
-    }        
-
-    public function testHomepageWithAuth():void
-    {   
-        //$this->client->loginUser($this->getUserTest()); 
-
-        $crawler = $this->client->request(Request::METHOD_GET, '/');      
-        //Testing redirect Route
-        $this->assertRouteSame('homepage');
-        // $this->assertResponseStatusCodeSame(200);
-        //$this->assertSelectorTextSame('title', 'To Do List app');
-        //$this->assertSelectorTextSame('h1', 'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !');
-       
+        // Testing redirect Route
+        $this->assertRouteSame('login');
     }
 
-    public function testMentor():void
+    public function testHomepageWithAuth(): void
     {
-        $user = new User();
-        $user->setEmail('john.doe@exemple.com');
-        $user->setPassword('password');
-        $user->setUsername('john');
-        $user->setRoles(['ROLE_USER']);
-        $this->client->loginUser($user);
-        $this->client->request('GET','/');
-        //$this->assertRouteSame('homepage');
-        //$this->assertResponseIsSuccessful();
+        $this->client->loginUser($this->getEnrolledUser());
+        $crawler = $this->client->request(Request::METHOD_GET, '/');
+        // Testing redirect Route
+        $this->assertRouteSame('homepage');
+        // Testing Response is success.
+        $this->assertResponseIsSuccessful();
     }
 
+    public function testHomepageWithWrongAuth(): void
+    {
+        $this->client->request(Request::METHOD_GET, '/');
+
+        // Testing Response Code.
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
+        // Testing redirection.
+        $this->assertResponseRedirects();
+
+        // Follow Redirection.
+        $this->client->followRedirect();
+
+        // Testing Response Code after redirect
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+        // Testing route
+        $this->assertRouteSame('login');
+    }
+
+    public function testHomepageFrontElementWithAut()
+    {
+        $this->client->loginUser($this->getEnrolledUser());
+        $crawler = $this->client->request(Request::METHOD_GET, '/');
+        // Testing redirect Route
+        $this->assertRouteSame('homepage');
+
+        // Testing Selector H1
+        $this->assertSelectorExists('h1');
+
+        // Testion titles.
+        $this->assertSelectorTextSame('title', 'To Do List app');
+
+        // Test Link Se Déconnecter /Logout
+        $logoutBtn = $crawler->filter('.btn-danger');
+        $logoutRoute = $this->client->getContainer()->get('router')->generate('logout');
+        $this->assertSame($logoutRoute, $logoutBtn->filter('a')->attr('href'));
+
+        // Test Link Nouvelle Tâche /tasks/create
+        $logoutBtn = $crawler->filter('.btn-success');
+        $logoutRoute = $this->client->getContainer()->get('router')->generate('task_create');
+        $this->assertSame($logoutRoute, $logoutBtn->filter('a')->attr('href'));
+
+        // Test Link Consulter la liste à faire /tasks
+        $logoutBtn = $crawler->filter('.btn-info');
+        $logoutRoute = $this->client->getContainer()->get('router')->generate('task_list');
+        $this->assertSame($logoutRoute, $logoutBtn->filter('a')->attr('href'));
+
+        // Test Link Consulter la liste terminées /tasks/done
+        $logoutBtn = $crawler->filter('.btn-primary');
+        $logoutRoute = $this->client->getContainer()->get('router')->generate('task_list_done');
+        $this->assertSame($logoutRoute, $logoutBtn->filter('a')->attr('href'));
+    }
 }

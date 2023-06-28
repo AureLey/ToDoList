@@ -16,8 +16,8 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ORM\Table]
@@ -113,12 +113,9 @@ class Task
     {
         return $this->isDone;
     }
-    
+
     /**
-     * toggle
-     *
-     * @param  mixed $flag
-     * @return self
+     * toggle.
      */
     public function toggle($flag): self
     {
@@ -126,9 +123,9 @@ class Task
 
         return $this;
     }
-    
+
     /**
-     * getUser
+     * getUser.
      *
      * @return user
      */
@@ -136,12 +133,11 @@ class Task
     {
         return $this->user;
     }
-    
+
     /**
-     * setUser
+     * setUser.
      *
-     * @param  mixed $user
-     * @return self
+     * @param mixed $user
      */
     public function setUser(?user $user): self
     {

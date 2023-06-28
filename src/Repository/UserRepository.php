@@ -27,13 +27,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    // Inject AbstractRepo to get EntityMananger
-    // private AbstractRepository $abstractRepo;
-
-    // public function __construct(AbstractRepository $abstractRepo)
-    // {
-    //     $this->abstractRepo = $abstractRepo;
-    // }
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
