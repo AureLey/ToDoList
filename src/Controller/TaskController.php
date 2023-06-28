@@ -127,12 +127,11 @@ class TaskController extends AbstractController
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        //redirect in the correct list
-        if($task->isDone())
-        {
+        // redirect in the correct list
+        if ($task->isDone()) {
             return $this->redirectToRoute('task_list_done');
         }
-        else
-            return $this->redirectToRoute('task_list');
+
+        return $this->redirectToRoute('task_list');
     }
 }
