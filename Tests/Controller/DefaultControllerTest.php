@@ -23,17 +23,27 @@ class DefaultControllerTest extends DatabaseDependantTestCase
         // Testing redirect Route
         $this->assertRouteSame('login');
     }
-
+    
+    /**
+     * testHomepageWithAuth, call homepage with authentification
+     *
+     * @return void
+     */
     public function testHomepageWithAuth(): void
     {
         $this->client->loginUser($this->getEnrolledUser());
-        $crawler = $this->client->request(Request::METHOD_GET, '/');
+        $this->client->request(Request::METHOD_GET, '/');
         // Testing redirect Route
         $this->assertRouteSame('homepage');
         // Testing Response is success.
         $this->assertResponseIsSuccessful();
     }
-
+    
+    /**
+     * testHomepageWithWrongAuth, call homepage without authentification
+     *
+     * @return void
+     */
     public function testHomepageWithWrongAuth(): void
     {
         $this->client->request(Request::METHOD_GET, '/');
@@ -53,8 +63,13 @@ class DefaultControllerTest extends DatabaseDependantTestCase
         // Testing route
         $this->assertRouteSame('login');
     }
-
-    public function testHomepageFrontElementWithAut()
+    
+    /**
+     * testHomepageFrontElementWithAut, Testing element in page
+     *
+     * @return void
+     */
+    public function testHomepageFrontElementWithAut(): void
     {
         $this->client->loginUser($this->getEnrolledUser());
         $crawler = $this->client->request(Request::METHOD_GET, '/');

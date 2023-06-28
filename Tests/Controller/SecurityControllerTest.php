@@ -7,8 +7,13 @@ namespace App\Tests;
 use Symfony\Component\HttpFoundation\Request;
 
 class SecurityControllerTest extends DatabaseDependantTestCase
-{
-    public function testLogout()
+{    
+    /**
+     * testLogout
+     *
+     * @return void
+     */
+    public function testLogout(): void
     {
         $this->client->loginUser($this->getEnrolledUser());
         $crawler = $this->client->request(Request::METHOD_GET, '/');

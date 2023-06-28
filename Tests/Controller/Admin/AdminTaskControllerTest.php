@@ -9,12 +9,17 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminTaskControllerTest extends DatabaseDependantTestCase
-{
-    public function testDashboardHomepage()
+{    
+    /**
+     * testDashboardHomepage; Testing ROLE ADMIN to access to dashboard
+     *
+     * @return void
+     */
+    public function testDashboardHomepage(): void
     {
         // Login.
         $this->client->loginUser($this->getEnrolledUser(['ROLE_ADMIN']));
-        $crawler = $this->client->request('GET', '/admin/tasks');
+        $this->client->request('GET', '/admin/tasks');
 
         // Testing redirect Route.
         $this->assertRouteSame('admin_list_tasks');
@@ -23,7 +28,12 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testAdminTaskCreation, Admin User add one task
+     *
+     * @return void
+     */
     public function testAdminTaskCreation(): void
     {
         // Login.
@@ -35,8 +45,8 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         $this->assertSelectorTextContains('h1', 'Créer une nouvelle tâche');
         // Testing and fill form
         $form = $crawler->selectButton('Ajouter')->form([
-            'task[title]' => 'testcreateTaskTitle',
-            'task[content]' => 'testCreateTaskContent',
+                                                               'task[title]' => 'testcreateTaskTitle',
+                                                               'task[content]' => 'testCreateTaskContent',
         ]);
 
         $this->client->submit($form);
@@ -46,10 +56,15 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! La tâche a été bien été ajoutée.');
     }
-
+    
+    /**
+     * testAdminEditTask, Admin User Edit one Task
+     *
+     * @return void
+     */
     public function testAdminEditTask(): void
     {
-        // init User and attach him to a task ( Voter )
+        // Init User and attach him to a task ( Voter )
         $user = $this->getEnrolledUser(['ROLE_ADMIN']);
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
@@ -67,25 +82,30 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         // Testing and fill form
         $form = $crawler->filter('form[name=task]')->form([
-        'task[title]' => $task->getTitle(),
-        'task[content]' => $task->getContent(),
+                                                           'task[title]' => $task->getTitle(),
+                                                           'task[content]' => $task->getContent(),
         ]);
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! La tâche a bien été modifié');
     }
-
-    public function testAdminDeleteTask()
+    
+    /**
+     * testAdminDeleteTask, Admin User delete one Task
+     *
+     * @return void
+     */
+    public function testAdminDeleteTask(): void
     {
-        // init User and attach him to a task ( Voter )
+        // Init User and attach him to a task ( Voter )
         $user = $this->getEnrolledUser(['ROLE_ADMIN']);
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
-        $id = $task->getId();
+        $idTask = $task->getId();
         // Login.
         $this->client->loginUser($user);
-        $crawler = $this->client->request('GET', "/admin/tasks/{$id}/delete");
+        $this->client->request('GET', "/admin/tasks/{$idTask}/delete");
 
         // Testing redirect Route
         $this->assertRouteSame('admin_delete_task');

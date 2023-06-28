@@ -9,7 +9,12 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class TaskControllerTest extends DatabaseDependantTestCase
-{
+{    
+    /**
+     * testTaskCreationWithAuth, call creation task page with authentification
+     *
+     * @return void
+     */
     public function testTaskCreationWithAuth(): void
     {
         // Login.
@@ -23,7 +28,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testTaskCreationWithoutAuth, call creation task page without authentification
+     *
+     * @return void
+     */
     public function testTaskCreationWithoutAuth(): void
     {
         $this->client->request('GET', '/tasks/create');
@@ -37,7 +47,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testTaskListUncheck, call list of task page
+     *
+     * @return void
+     */
     public function testTaskListUncheck(): void
     {
         // Login.
@@ -50,7 +65,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testTaskListUncheckTestingRouteWithoutAuth, call list of task page without authentification
+     *
+     * @return void
+     */
     public function testTaskListUncheckTestingRouteWithoutAuth(): void
     {
         $this->client->request('GET', '/tasks');
@@ -63,7 +83,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testTaskListDone, call page list of task are done
+     *
+     * @return void
+     */
     public function testTaskListDone(): void
     {
         // Login.
@@ -77,7 +102,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testTaskListDoneTestingRouteWithoutAuth, call list of task without authentification
+     *
+     * @return void
+     */
     public function testTaskListDoneTestingRouteWithoutAuth(): void
     {
         $this->client->request('GET', '/tasks/done');
@@ -90,10 +120,15 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testEditTask, call edition task page
+     *
+     * @return void
+     */
     public function testEditTask(): void
     {
-        // init User and attach him to a task ( Voter )
+        // Init User and attach him to a task ( Voter )
         $user = $this->getEnrolledUser();
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
@@ -109,11 +144,16 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testEditTaskTestingRouteWithoutAuth , call edition task page without authentification
+     *
+     * @return void
+     */
     public function testEditTaskTestingRouteWithoutAuth(): void
     {
-        $id = 1;
-        $this->client->request('GET', '/tasks/{$id}/edit');
+        $idtask = 1;
+        $this->client->request('GET', "/tasks/{$idtask}/edit");
         // Test Redirection when nobody is loged
         $this->assertResponseRedirects();
         // Follow Redirection
@@ -123,17 +163,21 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    public function testDeleteTask()
+    
+    /**
+     * testDeleteTask, call page of deletion task
+     *
+     * @return void
+     */
+    public function testDeleteTask(): void
     {
-        // init User and attach him to a task ( Voter ).
+        // Init User and attach him to a task ( Voter ).
         $user = $this->getEnrolledUser();
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
-        $id = $task->getId();
         // Login.
         $this->client->loginUser($user);
-        $crawler = $this->client->request('GET', "/tasks/{$id}/delete");
+        $this->client->request('GET', "/tasks/{$task->getId()}/delete");
 
         // Testing redirect Route
         $this->assertRouteSame('task_delete');
@@ -143,11 +187,16 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    public function testDeleteTaskTestingRouteWithoutAuth()
+    
+    /**
+     * testDeleteTaskTestingRouteWithoutAuth, call page of deletion task without authentification
+     *
+     * @return void
+     */
+    public function testDeleteTaskTestingRouteWithoutAuth(): void
     {
-        $id = 1;
-        $this->client->request('GET', "/tasks/{$id}/delete");
+        $idTask = 1;
+        $this->client->request('GET', "/tasks/{$idTask}/delete");
         // Test Redirection when nobody is loged
         $this->assertResponseRedirects();
         // Follow Redirection
@@ -157,17 +206,21 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    public function testTaskIsDone()
+    
+    /**
+     * testTaskIsDone, testing isDone function
+     *
+     * @return void
+     */
+    public function testTaskIsDone(): void
     {
-        // init User and attach him to a task ( Voter )
+        // Init User and attach him to a task ( Voter )
         $user = $this->getEnrolledUser();
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
-        $id = $task->getId();
         // Login.
         $this->client->loginUser($user);
-        $this->client->request('GET', "/tasks/{$id}/toggle");
+        $this->client->request('GET', "/tasks/{$task->getId()}/toggle");
 
         // Testing redirect Route
         $this->assertRouteSame('task_toggle');
@@ -177,7 +230,12 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testFormNewTask testing new Task form
+     *
+     * @return void
+     */
     public function testFormNewTask()
     {
         // Login.
@@ -192,17 +250,21 @@ class TaskControllerTest extends DatabaseDependantTestCase
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! La tâche a été bien été ajoutée.');
     }
-
+    
+    /**
+     * testFormEditTask, testing edition task form
+     *
+     * @return void
+     */
     public function testFormEditTask()
     {
-        // init User and attach him to a task (Voter).
+        // Init User and attach him to a task (Voter).
         $user = $this->getEnrolledUser();
         // Call function who create oneTask and link it to an user.
         $task = $this->getOneTask($user);
-        $id = $task->getId();
         // Login.
         $this->client->loginUser($user);
-        $crawler = $this->client->request('GET', "/tasks/{$id}/edit");
+        $crawler = $this->client->request('GET', "/tasks/{$task->getId()}/edit");
         // Fill Modify Task form.
         $form = $crawler->selectButton('Modifier')->form();
         $form['task[title]'] = 'titleTest';

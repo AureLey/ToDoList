@@ -137,7 +137,7 @@ class Task
     /**
      * setUser.
      *
-     * @param mixed $user
+     * @param User $user return an User Class
      */
     public function setUser(?user $user): self
     {

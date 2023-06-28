@@ -15,10 +15,12 @@ class AdminDashboardTest extends DatabaseDependantTestCase
     public function testDashboardHomepageWithoutAdminRole(): void
     {
         $this->client->loginUser($this->getEnrolledUser());
-        $crawler = $this->client->request('GET', '/admin');
+        $this->client->request('GET', '/admin');
 
         // Testing redirect Route
         $this->assertRouteSame('dashboard');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+
+        
     }
 }

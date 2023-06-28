@@ -9,7 +9,12 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminUserControllerTest extends DatabaseDependantTestCase
-{
+{    
+    /**
+     * testAdminUserCreation, Admin User call new User page
+     *
+     * @return void
+     */
     public function testAdminUserCreation(): void
     {
         // Login.
@@ -22,7 +27,12 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testAdminEditUser, Admin user call Edit page to modify an user, param = id
+     *
+     * @return void
+     */
     public function testAdminEditUser(): void
     {
         $user = $this->getEnrolledUser(['ROLE_ADMIN']);
@@ -38,7 +48,12 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
+    
+    /**
+     * testAdminDeleteUser, Testing user deletion.
+     *
+     * @return void
+     */
     public function testAdminDeleteUser(): void
     {
         $user = $this->getEnrolledUser(['ROLE_ADMIN']);
@@ -46,10 +61,10 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         $this->getOneTestUser();
         $userRepository = static::getContainer()->get(UserRepository::class);
         $userDelete = $userRepository->findOneByEmail('john.test@exemple.com');
-        $id = $userDelete->getId();
+        $idUserDelete = $userDelete->getId();
         // Login.
         $this->client->loginUser($user);
-        $this->client->request('GET', "admin/users/{$id}/delete");
+        $this->client->request('GET', "admin/users/{$idUserDelete}/delete");
 
         // Testing redirect Route
         $this->assertRouteSame('admin_user_delete');
@@ -59,8 +74,13 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    public function testFormNewuser()
+    
+    /**
+     * testFormNewuser, testing User creation form
+     *
+     * @return void
+     */
+    public function testFormNewuser(): void
     {
         $this->client->loginUser($this->getEnrolledUser(['ROLE_ADMIN']));
         $crawler = $this->client->request('GET', '/admin/users/create');
@@ -77,25 +97,30 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! L\'utilisateur a bien été ajouté.');
     }
-
-    public function testFormEditUser()
+    
+    /**
+     * testFormEditUser Testing Edition User form
+     *
+     * @return void
+     */
+    public function testFormEditUser(): void
     {
-        // init User and attach him to a task ( Voter )
+        // Init User and attach him to a task ( Voter )
         $this->client->loginUser($this->getEnrolledUser(['ROLE_ADMIN']));
         // Call function who create a second testing user to modify it.
         $this->getOneTestUser();
-        // Call Reposiotry
+        // Call Repository.
         $userRepository = static::getContainer()->get(UserRepository::class);
         $userEdit = $userRepository->findOneByEmail('john.test@exemple.com');
-        $id = $userEdit->getId();
-        $crawler = $this->client->request('GET', "/admin/users/{$id}/edit");
+        $idUserEdit = $userEdit->getId();
+        $crawler = $this->client->request('GET', "/admin/users/{$idUserEdit}/edit");
         $this->assertResponseIsSuccessful();
         // Fill edit form
         $form = $crawler->filter('form[name=user]')->form([
-        'user[username]' => $userEdit->getUsername(),
-        'user[password][first]' => $userEdit->getPassword(),
-        'user[password][second]' => $userEdit->getPassword(),
-        'user[email]' => $userEdit->getEmail(),
+            'user[username]' => $userEdit->getUsername(),
+            'user[password][first]' => $userEdit->getPassword(),
+            'user[password][second]' => $userEdit->getPassword(),
+            'user[email]' => $userEdit->getEmail(),
         ]);
         $this->client->submit($form);
         $crawler = $this->client->followRedirect();

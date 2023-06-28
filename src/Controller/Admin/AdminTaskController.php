@@ -46,8 +46,8 @@ class AdminTaskController extends AbstractController
             5);
 
         return $this->render('admin/admin.html.twig', [
-                'tasks' => $taskPaginate,
-                'dashboard' => false]);
+                                                       'tasks' => $taskPaginate,
+                                                       'dashboard' => false]);
     }
 
     #[Route('admin/tasks/create', name: 'admin_task_create')]
@@ -87,8 +87,8 @@ class AdminTaskController extends AbstractController
         }
 
         return $this->render('admin/edit_task.html.twig', [
-            'form' => $form->createView(),
-            'task' => $task,
+                                                           'form' => $form->createView(),
+                                                           'task' => $task,
         ]);
     }
 
