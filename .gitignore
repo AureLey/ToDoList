@@ -14,7 +14,7 @@
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
-/tools
+tools/php-cs-fixer/vendor
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -34,3 +34,6 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+public/test-coverage
+.phpunit.cache
+

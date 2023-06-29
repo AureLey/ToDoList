@@ -23,7 +23,7 @@ class TaskVoter extends Voter
 {
     public const EDIT = 'TASK_EDIT';
     public const VIEW = 'TASK_VIEW';
-    public const DELETE = 'TASK_EDIT';
+    public const DELETE = 'TASK_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

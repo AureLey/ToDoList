@@ -81,11 +81,14 @@
 
             <hr>
             <footer>
-                <div class="row">
-                
-                    <div class="col-lg-12">
-                        
-                        <p class="pull-right"><a href="{{ path('dashboard') }}" class="">Admin</a> Copyright &copy; OpenClassrooms</p>                                                
+                <div class="row">                    
+                    <div class="col-lg-12 text-right">                        
+                        <p class="pull-right">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('dashboard') }}" class="btn btn-primary pull-rigt">Admin</a>
+                            {% endif %}
+                            Copyright &copy; OpenClassrooms
+                        </p>                                                
                     </div>
                 </div>
             </footer>

@@ -16,6 +16,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -29,23 +30,23 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(type: Types::STRING, unique: true)]
     #[Assert\NotBlank(message: 'Vous devez saisir un nom d\'utilisateur.')]
     private ?string $username = null;
 
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(type: Types::STRING)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 60, unique: true)]
+    #[ORM\Column(type: Types::STRING, unique: true)]
     #[Assert\NotBlank(message: 'Vous devez saisir une adresse email.')]
     #[Assert\Email(message: 'Le format de l\'adresse n\'est pas correcte.')]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
@@ -129,6 +130,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * getRoles.
+     *
      * @see UserInterface
      */
     public function getRoles(): array
@@ -141,7 +144,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * setRoles.
+     *
      * @see UserInterface
+     *
+     * @param mixed $roles
      */
     public function setRoles(array $roles): self
     {
@@ -165,14 +172,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * Returning a salt is only needed if you are not using a modern
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
+     */
+    /**
+     * getSalt.
      *
      * @see UserInterface
+     *
+     * @return string
      */
     public function getSalt(): ?string
     {
         return null;
     }
 
+    /**
+     * eraseCredentials.
+     */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -187,7 +202,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->tasks;
     }
 
-    public function addTask(Task $task): static
+    /**
+     * addTask.
+     *
+     * @param mixed $task
+     */
+    public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks->add($task);
@@ -197,7 +217,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeTask(Task $task): static
+    /**
+     * removeTask.
+     *
+     * @param mixed $task
+     */
+    public function removeTask(Task $task): self
     {
         if ($this->tasks->removeElement($task)) {
             // set the owning side to null (unless already changed)

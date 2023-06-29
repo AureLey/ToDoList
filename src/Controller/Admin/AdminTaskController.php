@@ -37,7 +37,7 @@ class AdminTaskController extends AbstractController
     }
 
     #[Route('/admin/tasks', name: 'admin_list_tasks')]
-    public function getAllTasksDashboard(Request $request, PaginatorInterface $paginator)
+    public function getAllTasksDashboard(Request $request, PaginatorInterface $paginator): Response
     {
         $tasks = $this->taskRepo->findAll();
         $taskPaginate = $paginator->paginate(
@@ -46,8 +46,8 @@ class AdminTaskController extends AbstractController
             5);
 
         return $this->render('admin/admin.html.twig', [
-                'tasks' => $taskPaginate,
-                'dashboard' => false]);
+                                                       'tasks' => $taskPaginate,
+                                                       'dashboard' => false]);
     }
 
     #[Route('admin/tasks/create', name: 'admin_task_create')]
@@ -86,9 +86,9 @@ class AdminTaskController extends AbstractController
             return $this->redirectToRoute('admin_list_tasks');
         }
 
-        return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
-            'task' => $task,
+        return $this->render('admin/edit_task.html.twig', [
+                                                           'form' => $form->createView(),
+                                                           'task' => $task,
         ]);
     }
 

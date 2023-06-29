@@ -103,7 +103,13 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
+    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]    
+    /**
+     * toggleTask, pass Task to Done or Undone.
+     *
+     * @param  Task $task
+     * @return Response
+     */
     public function toggleTask(Task $task): Response
     {
         // Check permission to delete via Voter function.
@@ -126,6 +132,11 @@ class TaskController extends AbstractController
         $this->entityManager->flush();
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+        // redirect in the correct list
+        if ($task->isDone()) {
+            return $this->redirectToRoute('task_list_done');
+        }
 
         return $this->redirectToRoute('task_list');
     }

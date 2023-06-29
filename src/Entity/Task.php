@@ -16,19 +16,19 @@ namespace App\Entity;
 use App\Repository\TaskRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 #[ORM\Table]
 class Task
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private \DateTime $createdAt;
 
     #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
@@ -41,16 +41,12 @@ class Task
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isDone = false;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
-
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
     private ?user $user = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
         $this->isDone = false;
     }
 
@@ -62,28 +58,6 @@ class Task
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * getCreatedAt.
-     *
-     * @return DateTime
-     */
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * setCreatedAt.
-     *
-     * @param Datetime $createdAt
-     */
-    public function setCreatedAt($createdAt): self
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**
@@ -140,6 +114,9 @@ class Task
         return $this->isDone;
     }
 
+    /**
+     * toggle.
+     */
     public function toggle($flag): self
     {
         $this->isDone = $flag;
@@ -147,24 +124,22 @@ class Task
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
+    /**
+     * getUser.
+     *
+     * @return user
+     */
     public function getUser(): ?user
     {
         return $this->user;
     }
 
-    public function setUser(?user $user): static
+    /**
+     * setUser.
+     *
+     * @param User $user return an User Class
+     */
+    public function setUser(?user $user): self
     {
         $this->user = $user;
 
