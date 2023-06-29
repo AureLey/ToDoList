@@ -1,0 +1,17 @@
+{# Admin DashBoard, test if Dashboard?  send User infos : Tasks infos #}
+{% extends 'base.html.twig' %}
+
+{% block header_img %}{% endblock %}
+{% block header_title %}<h1>Liste des {{dashboard ?'utilisateurs': 'tâches'}}</h1>{% endblock %}
+{% block body %}
+{% if dashboard %}
+    <a href="{{ path('admin_list_tasks') }}" class="btn btn-primary">Liste des tâches</a>
+    <a href="{{ path('admin_user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
+    {{ include("admin/users.html.twig")}}
+{% else %}
+    <a href="{{ path('dashboard') }}" class="btn btn-primary">Liste des utilsateurs</a>
+    <a href="{{ path('admin_task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
+    {{ include("admin/tasks.html.twig")}}
+{% endif %}
+
+{% endblock %}
