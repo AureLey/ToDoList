@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Tests\Controller\Admin;
 
 use App\Repository\UserRepository;
@@ -9,11 +18,9 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminUserControllerTest extends DatabaseDependantTestCase
-{    
+{
     /**
-     * testAdminUserCreation, Admin User call new User page
-     *
-     * @return void
+     * testAdminUserCreation, Admin User call new User page.
      */
     public function testAdminUserCreation(): void
     {
@@ -27,19 +34,16 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
+
     /**
-     * testAdminEditUser, Admin user call Edit page to modify an user, param = id
-     *
-     * @return void
+     * testAdminEditUser, Admin user call Edit page to modify an user, param = id.
      */
     public function testAdminEditUser(): void
     {
         $user = $this->getEnrolledUser(['ROLE_ADMIN']);
-        $id = $user->getId();
         // Login.
         $this->client->loginUser($user);
-        $this->client->request('GET', "/admin/users/{$id}/edit");
+        $this->client->request('GET', "/admin/users/{$user->getId()}/edit");
 
         // Testing redirect Route
         $this->assertRouteSame('admin_user_edit');
@@ -48,11 +52,9 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
+
     /**
      * testAdminDeleteUser, Testing user deletion.
-     *
-     * @return void
      */
     public function testAdminDeleteUser(): void
     {
@@ -61,10 +63,9 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         $this->getOneTestUser();
         $userRepository = static::getContainer()->get(UserRepository::class);
         $userDelete = $userRepository->findOneByEmail('john.test@exemple.com');
-        $idUserDelete = $userDelete->getId();
         // Login.
         $this->client->loginUser($user);
-        $this->client->request('GET', "admin/users/{$idUserDelete}/delete");
+        $this->client->request('GET', "admin/users/{$userDelete->getId()}/delete");
 
         // Testing redirect Route
         $this->assertRouteSame('admin_user_delete');
@@ -74,11 +75,9 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
+
     /**
-     * testFormNewuser, testing User creation form
-     *
-     * @return void
+     * testFormNewuser, testing User creation form.
      */
     public function testFormNewuser(): void
     {
@@ -97,11 +96,9 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! L\'utilisateur a bien été ajouté.');
     }
-    
+
     /**
-     * testFormEditUser Testing Edition User form
-     *
-     * @return void
+     * testFormEditUser Testing Edition User form.
      */
     public function testFormEditUser(): void
     {
@@ -112,17 +109,20 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
         // Call Repository.
         $userRepository = static::getContainer()->get(UserRepository::class);
         $userEdit = $userRepository->findOneByEmail('john.test@exemple.com');
-        $idUserEdit = $userEdit->getId();
-        $crawler = $this->client->request('GET', "/admin/users/{$idUserEdit}/edit");
+        $crawler = $this->client->request('GET', "/admin/users/{$userEdit->getId()}/edit");
         $this->assertResponseIsSuccessful();
         // Fill edit form
         $form = $crawler->filter('form[name=user]')->form([
-            'user[username]' => $userEdit->getUsername(),
-            'user[password][first]' => $userEdit->getPassword(),
-            'user[password][second]' => $userEdit->getPassword(),
-            'user[email]' => $userEdit->getEmail(),
+            'user[username]' => 'AdminEditUserUsername',
+            'user[password][first]' => 'AdminEditUserPassword',
+            'user[password][second]' => 'AdminEditUserPassword',
+            'user[email]' => 'AdminEditUser.email@gmail.com',
         ]);
         $this->client->submit($form);
+        // Testing User edition and fields are different to eachother
+        $this->assertNotSame($userEdit->getUsername(), $form['user[username]']->getValue());
+        $this->assertNotSame($userEdit->getPassword(), $form['user[password][first]']->getValue());
+        $this->assertNotSame($userEdit->getEmail(), $form['user[email]']->getValue());
         $crawler = $this->client->followRedirect();
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! L\'utilisateur a bien été modifié');

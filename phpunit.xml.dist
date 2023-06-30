@@ -14,24 +14,24 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
-        <directory suffix=".php">./src</directory>
-    </whitelist>
-  </filter>
-  <coverage/>
+  <coverage includeUncoveredFiles="true"
+              processUncoveredFiles="true"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+        <report>           
+            <html outputDirectory="html-coverage" lowUpperBound="50" highLowerBound="90"/>
+        </report>
+    </coverage>
   <!-- Run `composer require symfony/panther` before enabling this extension -->
   <!--
     <extensions>
         <extension class="Symfony\Component\Panther\ServerExtension" />
     </extensions>
     -->
-  <source>
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-  </source>
   <logging>
-    <log type="coverage-text" target="php://stdout"/>
+    <text outputFile="logfile.txt"/>
   </logging>
 </phpunit>

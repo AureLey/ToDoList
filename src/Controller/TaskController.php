@@ -25,8 +25,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
-    // Injection of Repository
+    /**  Injection of Repository */
     private TaskRepository $taskRepo;
+    /** Injection of EntityManager */
     private EntityManagerInterface $entityManager;
 
     public function __construct(TaskRepository $taskRepo, EntityManagerInterface $entityManager)
@@ -69,8 +70,7 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setUser($this->getUser());
-            $this->entityManager->persist($task);
-            $this->entityManager->flush();
+            $this->taskRepo->save($task, true);
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
 
@@ -90,8 +90,7 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
-
+            $this->taskRepo->save($task, true);
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
             return $this->redirectToRoute('task_list');
@@ -103,13 +102,10 @@ class TaskController extends AbstractController
         ]);
     }
 
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]    
     /**
      * toggleTask, pass Task to Done or Undone.
-     *
-     * @param  Task $task
-     * @return Response
      */
+    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTask(Task $task): Response
     {
         // Check permission to delete via Voter function.
@@ -130,10 +126,9 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted('TASK_DELETE', $task);
         $this->entityManager->remove($task);
         $this->entityManager->flush();
-
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
-        // redirect in the correct list
+        // Redirect in the correct list.
         if ($task->isDone()) {
             return $this->redirectToRoute('task_list_done');
         }
