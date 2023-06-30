@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Tests\Controller;
 
 use App\Tests\DatabaseDependantTestCase;
@@ -23,11 +32,9 @@ class DefaultControllerTest extends DatabaseDependantTestCase
         // Testing redirect Route
         $this->assertRouteSame('login');
     }
-    
+
     /**
-     * testHomepageWithAuth, call homepage with authentification
-     *
-     * @return void
+     * testHomepageWithAuth, call homepage with authentification.
      */
     public function testHomepageWithAuth(): void
     {
@@ -38,11 +45,9 @@ class DefaultControllerTest extends DatabaseDependantTestCase
         // Testing Response is success.
         $this->assertResponseIsSuccessful();
     }
-    
+
     /**
-     * testHomepageWithWrongAuth, call homepage without authentification
-     *
-     * @return void
+     * testHomepageWithWrongAuth, call homepage without authentification.
      */
     public function testHomepageWithWrongAuth(): void
     {
@@ -63,11 +68,9 @@ class DefaultControllerTest extends DatabaseDependantTestCase
         // Testing route
         $this->assertRouteSame('login');
     }
-    
+
     /**
-     * testHomepageFrontElementWithAut, Testing element in page
-     *
-     * @return void
+     * testHomepageFrontElementWithAut, Testing element in page.
      */
     public function testHomepageFrontElementWithAut(): void
     {

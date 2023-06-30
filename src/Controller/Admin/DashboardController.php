@@ -35,7 +35,8 @@ class DashboardController extends AbstractController
     #[Route('/admin', name: 'dashboard')]
     public function adminDashboard(Request $request, PaginatorInterface $paginator): Response
     {
-        $users = $this->userRepo->findAll();
+        // Filter Uses by Username.
+        $users = $this->userRepo->findBy([], ['username' => 'ASC']);
         $userPaginate = $paginator->paginate(
             $users,
             $request->query->getInt('page', 1),

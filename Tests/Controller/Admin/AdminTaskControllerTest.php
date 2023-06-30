@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of Todolist
+ *
+ * (c)
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace App\Tests\Controller\Admin;
 
 use App\Entity\Task;
@@ -9,11 +18,9 @@ use App\Tests\DatabaseDependantTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminTaskControllerTest extends DatabaseDependantTestCase
-{    
+{
     /**
-     * testDashboardHomepage; Testing ROLE ADMIN to access to dashboard
-     *
-     * @return void
+     * testDashboardHomepage; Testing ROLE ADMIN to access to dashboard.
      */
     public function testDashboardHomepage(): void
     {
@@ -28,22 +35,20 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         // Testing Response.
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-    
+
     /**
-     * testAdminTaskCreation, Admin User add one task
-     *
-     * @return void
+     * testAdminTaskCreation, Admin User add one task.
      */
     public function testAdminTaskCreation(): void
     {
         // Login.
         $this->client->loginUser($this->getEnrolledUser(['ROLE_ADMIN']));
         $crawler = $this->client->request('GET', 'admin/tasks/create');
-        // Testing redirect Route
+        // Testing redirect Route.
         $this->assertRouteSame('admin_task_create');
         // Testing h1 selector.
         $this->assertSelectorTextContains('h1', 'Créer une nouvelle tâche');
-        // Testing and fill form
+        // Testing and fill form.
         $form = $crawler->selectButton('Ajouter')->form([
                                                                'task[title]' => 'testcreateTaskTitle',
                                                                'task[content]' => 'testCreateTaskContent',
@@ -56,11 +61,9 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! La tâche a été bien été ajoutée.');
     }
-    
+
     /**
-     * testAdminEditTask, Admin User Edit one Task
-     *
-     * @return void
+     * testAdminEditTask, Admin User Edit one Task.
      */
     public function testAdminEditTask(): void
     {
@@ -82,19 +85,20 @@ class AdminTaskControllerTest extends DatabaseDependantTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         // Testing and fill form
         $form = $crawler->filter('form[name=task]')->form([
-                                                           'task[title]' => $task->getTitle(),
-                                                           'task[content]' => $task->getContent(),
+                                                           'task[title]' => 'AdminTaskTitle',
+                                                           'task[content]' => 'AdminTaskContent',
         ]);
         $this->client->submit($form);
+        // Testing Task edition and fields are different to eachother
+        $this->assertNotSame($task->getTitle(), $form['task[title]']->getValue());
+        $this->assertNotSame($task->getContent(), $form['task[content]']->getValue());
         $crawler = $this->client->followRedirect();
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! La tâche a bien été modifié');
     }
-    
+
     /**
-     * testAdminDeleteTask, Admin User delete one Task
-     *
-     * @return void
+     * testAdminDeleteTask, Admin User delete one Task.
      */
     public function testAdminDeleteTask(): void
     {

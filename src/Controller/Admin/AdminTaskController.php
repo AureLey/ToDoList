@@ -39,7 +39,8 @@ class AdminTaskController extends AbstractController
     #[Route('/admin/tasks', name: 'admin_list_tasks')]
     public function getAllTasksDashboard(Request $request, PaginatorInterface $paginator): Response
     {
-        $tasks = $this->taskRepo->findAll();
+        // Filter Task by creation datetime.
+        $tasks = $this->taskRepo->findBy([], ['createdAt' => 'DESC']);
         $taskPaginate = $paginator->paginate(
             $tasks,
             $request->query->getInt('page', 1),
@@ -97,7 +98,7 @@ class AdminTaskController extends AbstractController
     {
         $this->entityManager->remove($task);
         $this->entityManager->flush();
-
+        // $this->taskRepo->remove($task,true);
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
         return $this->redirectToRoute('admin_list_tasks');

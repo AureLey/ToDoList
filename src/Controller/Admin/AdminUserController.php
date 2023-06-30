@@ -71,8 +71,7 @@ class AdminUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $encoder->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
-
-            $this->entityManager->flush();
+            $this->userRepo->save($user, true);
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
@@ -83,16 +82,18 @@ class AdminUserController extends AbstractController
     }
 
     #[Route('admin/users/{id}/delete', name: 'admin_user_delete')]
-    public function deleteTask(User $user, TaskRepository $taskRepository): Response
+    public function deleteUser(User $user, TaskRepository $taskRepository): Response
     {
         $tasks = $taskRepository->findBy(['user' => $user->getId()]);
-        foreach ($tasks as $task) {
+        foreach ($tasks as $key => $task) {
             $task->setUser(null);
-            $this->entityManager->persist($task);
+            if ($key === array_key_last($tasks)) {
+                $taskRepository->save($task, true);
+            } else {
+                $taskRepository->save($task);
+            }
         }
-        // $this->entityManager->flush();
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        $this->userRepo->remove($user, true);
 
         $this->addFlash('success', 'L\'utilisateur a bien été supprimée.');
 

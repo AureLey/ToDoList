@@ -39,16 +39,16 @@ class TaskVoter extends Voter
             return false;
         }
 
-        // ... (check conditions and return true to grant permission) ...
+        // Check conditions and return true to grant permission).
         switch ($attribute) {
             case self::EDIT:
-                // logic to determine if the user can EDIT
-                // return true or false
+                // Logic to determine if the user can EDIT.
+                // Return true or false.
                 return $subject->getUser()->getUserIdentifier() === $user->getUserIdentifier();
                 break;
             case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
+                // Logic to determine if the user can VIEW.
+                // Return true or false.
                 return $subject->getUser()->getUserIdentifier() === $user->getUserIdentifier();
                 break;
             case self::DELETE:
