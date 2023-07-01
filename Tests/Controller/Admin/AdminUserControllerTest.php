@@ -89,6 +89,7 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
             'user[email]' => 'user.test@gmail.com',
+            'user[roles]' => 'ROLE_USER',
         ]);
 
         $this->client->submit($form);
@@ -117,12 +118,14 @@ class AdminUserControllerTest extends DatabaseDependantTestCase
             'user[password][first]' => 'AdminEditUserPassword',
             'user[password][second]' => 'AdminEditUserPassword',
             'user[email]' => 'AdminEditUser.email@gmail.com',
+            'user[roles]' => 'ROLE_USER',
         ]);
         $this->client->submit($form);
         // Testing User edition and fields are different to eachother
         $this->assertNotSame($userEdit->getUsername(), $form['user[username]']->getValue());
         $this->assertNotSame($userEdit->getPassword(), $form['user[password][first]']->getValue());
         $this->assertNotSame($userEdit->getEmail(), $form['user[email]']->getValue());
+        $this->assertEquals($userEdit->getRoles(), array($form['user[roles]']->getValue()));
         $crawler = $this->client->followRedirect();
         // Testing Flash.
         $this->assertSelectorTextContains('div.alert.alert-success', 'Superbe ! L\'utilisateur a bien été modifié');

@@ -49,9 +49,7 @@ class AdminUserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $encoder->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
-
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            $this->userRepo->save($user, true);
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
