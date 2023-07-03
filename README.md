@@ -59,4 +59,10 @@ example_username
 ```
 root
 ```
+## Tests:
+
+Testing code:
+```
+php bin/phpunit
+```
 
