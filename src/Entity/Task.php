@@ -30,7 +30,7 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Vous devez saisir un titre.')]
     private ?string $title = null;
 
